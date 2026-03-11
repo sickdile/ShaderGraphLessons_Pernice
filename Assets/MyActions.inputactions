@@ -26,21 +26,21 @@
                 },
                 {
                     "name": "Kill",
-                    "type": "Button",
+                    "type": "PassThrough",
                     "id": "9344b9b8-5309-4f23-84bf-985e18036dde",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 },
                 {
-                    "name": "Pos",
-                    "type": "Value",
-                    "id": "08f639b9-c493-4275-86b1-b2940ddd68a5",
+                    "name": "Shoot",
+                    "type": "Button",
+                    "id": "b6c5703f-d4e9-4802-a348-0a9398546ddf",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": true
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -69,7 +69,7 @@
                 {
                     "name": "",
                     "id": "b249fbd1-0baf-45cf-85a4-d46725d153cd",
-                    "path": "<Mouse>/leftButton",
+                    "path": "<Mouse>/position",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -79,12 +79,12 @@
                 },
                 {
                     "name": "",
-                    "id": "3ed58183-10a6-49d1-b2e0-8056a167670b",
-                    "path": "<Mouse>/position",
+                    "id": "8e72f2c0-de48-40ec-9cc7-728d5a746cd4",
+                    "path": "<Mouse>/middleButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Pos",
+                    "action": "Shoot",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

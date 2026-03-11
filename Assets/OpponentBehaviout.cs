@@ -4,40 +4,84 @@ using UnityEngine.InputSystem;
 
 public class OpponentBehaviout : MonoBehaviour
 {
-    MeshRenderer myRenderer;
     [SerializeField] float dissolveSpeed = 1.0f;
 
     Vector2 pos;
+
+    bool killInput = false;
+
+    public InputAction action;
+
+    public Material quellaCosaFuori;
+
+    [SerializeField] float VignetteIntensityDefault;
     private void Start()
     {
-        myRenderer = GetComponent<MeshRenderer>();
+        MyActions myActions = new MyActions();
+        action = myActions.FindAction("Kill");
+        action.Enable();
+        action.performed += ctx => Ciao();
+        quellaCosaFuori.SetFloat("_VignetteIntensity", VignetteIntensityDefault);
     }
+    void Ciao()
+    {
+
+    }
+    public void Shoot(InputAction.CallbackContext ctx)
+    {
+        if (ctx.performed) killInput = true;
+        Debug.Log("HAI CLICCATO!!");
+    }
+    Coroutine hadesCR;
     public void Kill(InputAction.CallbackContext ctx)
     {
-        Ray ray = new Ray(Camera.main.ScreenToWorldPoint(pos), Vector2.zero);
-        Physics.Raycast(ray, out RaycastHit info);
-        if (info != null)
+        if (killInput)
         {
-            if (info.collider.CompareTag("Opponent"))
+            Ray ray = Camera.main.ScreenPointToRay(ctx.ReadValue<Vector2>());
+            RaycastHit hit;
+            Physics.Raycast(ray, out hit);
+
+            if (hit.collider != null && hit.collider.CompareTag("Opponent"))
             {
                 Debug.Log("Toccato Opponent");
-                StartCoroutine(enumerator());
+                if (hadesCR != null)
+                {
+                    StopCoroutine(hadesCR);
+                }
+
+                StartCoroutine(enumerator(hit.collider.gameObject.GetComponent<Renderer>()));
+                StartCoroutine(viewEnum(quellaCosaFuori));
             }
+        }
+
+    }
+
+
+    IEnumerator enumerator(Renderer renderer)
+    {
+        killInput = false;
+
+        while (renderer.material.GetFloat("_DissolveAmount") < 1.0f)
+        {
+            float newDissolve = renderer.material.GetFloat("_DissolveAmount") + (dissolveSpeed);
+            renderer.material.SetFloat("_DissolveAmount", newDissolve);
+            yield return null;
+        }
+        while (renderer.material.GetFloat("_DissolveAmount") > 0.0f)
+        {
+            float newDissolve = renderer.material.GetFloat("_DissolveAmount") - (dissolveSpeed);
+            renderer.material.SetFloat("_DissolveAmount", newDissolve);
+            yield return null;
         }
     }
 
-    public void OnMousePositionChanged(InputAction.CallbackContext ctx)
-    {
-        pos = ctx.ReadValue<Vector2>();
-    }
 
-    IEnumerator enumerator()
+    IEnumerator viewEnum(Material material)
     {
-        while (myRenderer.material.GetFloat("_DissolveAmount") > 0)
+        while (material.GetFloat("_VignetteIntensity") > 0)
         {
-            float newDissolve = myRenderer.material.GetFloat("_DissolveAmount") + dissolveSpeed * 0.01f;
-            myRenderer.material.SetFloat("_DissolveAmount", newDissolve);
-            if(myRenderer.material.GetFloat("_DissolveAmount")<= 0) Destroy(gameObject);    
+            float newIntensity = material.GetFloat("_VignetteIntensity")  -  dissolveSpeed;
+            material.SetFloat("_VignetteIntensity", newIntensity);
             yield return null;
         }
     }

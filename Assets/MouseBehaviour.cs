@@ -7,6 +7,8 @@ public class MouseBehaviour : MonoBehaviour
 {
     MeshRenderer myRenderer;
 
+    [SerializeField] Material boh;
+
     private void Start()
     {
         myRenderer = GetComponent<MeshRenderer>();
@@ -17,10 +19,8 @@ public class MouseBehaviour : MonoBehaviour
     {
         float a = context.ReadValue<float>();
         a = math.remap(-Screen.width * 0.5f, Screen.width * 0.5f, 0, 1, a);
-        Debug.Log("Changing mouse: " + a);
-         myRenderer.sharedMaterial.SetFloat("_Amplitude", a);
-       // myRenderer.material.SetFloat("Amplitude", a);
-        Debug.Log("AMPLITUDE IS " + myRenderer.sharedMaterial.GetFloat("_Amplitude"));
+        myRenderer.sharedMaterial.SetFloat("_Amplitude", a);
+        // myRenderer.material.SetFloat("Amplitude", a);
 
     }
 
